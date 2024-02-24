@@ -1,5 +1,12 @@
 `timescale 1ns / 1ps
 
+`default_nettype none
+
+`ifndef __FIR_MAIN
+`define __FIR_MAIN
+
+
+
 module fir_main #(
 	parameter TAP_SIZE = 3,
 	parameter NBR_OF_TAPS = 3,
