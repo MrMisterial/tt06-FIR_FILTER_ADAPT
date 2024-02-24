@@ -5,7 +5,7 @@
 
 `define default_netname none
 
-`include "fir_main.v"
+//`include "fir_main.v"
 
 module tt_um_haeuslermarkus_fir_filter (
     input  wire [7:0] ui_in,    // Dedicated inputs
