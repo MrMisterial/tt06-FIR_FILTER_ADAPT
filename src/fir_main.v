@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module FIR #(
+module fir_main #(
 	parameter TAP_SIZE = 3,
 	parameter NBR_OF_TAPS = 3,
 	parameter X_N_SIZE = 8,

@@ -48,7 +48,7 @@ module tt_um_haeuslermarkus_fir_filter (
 
     
     
-    FIR FIR_i(
+    fir_main fir_main_instance(
         .clk(clk),
         .reset(reset),
         .x_n(s_axis_fir_tdata),       
