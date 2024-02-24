@@ -30,3 +30,6 @@ async def test_adder(dut):
   await ClockCycles(dut.clk, 1)
 
   assert dut.uo_out.value == 50
+  
+  dut._log.info("Start FIR Testing")
+  

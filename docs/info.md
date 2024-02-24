@@ -11,7 +11,7 @@ You can also include images in this folder and reference them in the markdown. E
 
 The FIR FILTER ADAPT is a project that performs a FIR Filter behaviour. 
 
-The Input of the filter is provided by the xxx input pins. These represent an signed integer. The Chip performs than a multiplikation with the filter-tap value and adds them up. 
+The Input of the filter is provided by the xxx input pins. These represent an signed integer. The Chip performs than a multiplikation with the filter-tap values and adds them up. 
 The Filter needs as many clock cycles as taps to calculate the Filter output. After that the filtered signal is set to the output by using the output pins. 
 
 To optimize calculation and memory requirements, the symmetric step response property of a FIR Filter is used. That means only one half of the step response is stored and to calculate the whole filter characteristic, the first half of the step response is flipped. 
