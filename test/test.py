@@ -3,8 +3,14 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import ClockCycles, Timer, FallingEdge, ClockCycles, RisingEdge, Join, First
 from cocotb.binary import BinaryValue
+
+async def reset_dut(reset_n, duration_ns):
+	reset_n.value = 0
+	await Timer(duration_ns, units = "ns")
+	reset_n.value = 1
+	reset_n._log.info("dut reset completed")
 
 @cocotb.test()
 async def tt_init_state(dut):
@@ -18,6 +24,9 @@ async def tt_init_state(dut):
 	
 	#start clock
 	cocotb.start_soon(Clock(dut.clk, 16, units="ns").start())
+	
+	#reset dut
+	await reset_dut(dut.rst_n, 20)
 	
 	
 	print_func(dut, 'test')
