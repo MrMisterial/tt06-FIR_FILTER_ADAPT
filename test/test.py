@@ -11,7 +11,7 @@ async def tt_init_state(dut):
 	
 	print_func(dut, 'test')
 
-async def print_func(dut, text):
+def print_func(dut, text):
 	dut._log.info(text)
 	
 async def not_called(dut):
