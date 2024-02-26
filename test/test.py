@@ -4,10 +4,21 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
+from cocotb.binary import BinaryValue
 
 @cocotb.test()
 async def tt_init_state(dut):
-	dut._log.info("init state")
+	dut._log.info("Start Testcase: Check initial states and outputs")
+	
+	dut.ena.value = 1
+	dut.s_set_coeffs.value = 0
+	dut.s_axis_fir_tvalid.value = 1
+	dut.s_axis_fir_tdata.value = BinaryValue('00000000')
+	
+	
+	#start clock
+	cocotb.start_soon(Clock(dut.clk, 16, units="ns").start())
+	
 	
 	print_func(dut, 'test')
 
