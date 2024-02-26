@@ -37,8 +37,8 @@ async def tt_init_state(dut):
 	await RisingEdge(dut.clk)
 	await RisingEdge(dut.clk)
 	await RisingEdge(dut.clk)
-	
-	dut._log.info(f'#{i:>03} -> {dut.m_axis_fir_tdata.value.binstr}')
+	for i in range(8):
+		dut._log.info(f'#{i:>03} -> {dut.m_axis_fir_tdata.value.binstr}')
 	
 	print_func(dut, 'test')
 
