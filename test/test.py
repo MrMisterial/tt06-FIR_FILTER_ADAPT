@@ -6,6 +6,18 @@ from cocotb.clock import Clock
 from cocotb.triggers import ClockCycles
 
 @cocotb.test()
+async def tt_init_state(dut):
+	dut._log.info("init state")
+	
+	print_func(dut, 'test')
+
+async def print_func(dut, text):
+	dut._log.info(text)
+	
+async def not_called(dut):
+	dut._log.info('this shouldnt be called')
+
+@cocotb.test()
 async def test_adder(dut):
   dut._log.info("Start")
   
