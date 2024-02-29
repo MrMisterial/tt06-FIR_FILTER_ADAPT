@@ -30,21 +30,21 @@ module tb ();
   wire [7:0] s_axis_fir_tdata; //FIR INPUT DATA 
   
   //assign inputs
-  assign s_axis_fir_tdata = ui_in[7:0]; //8 Bit in
-  assign s_axis_fir_tvalid = uio_in[7];
-  assign s_set_coeffs = uio_in[6];
+  assign ui_in[7:0] = s_axis_fir_tdata; //8 Bit in
+  assign uio_in[7] = s_axis_fir_tvalid;
+  assign uio_in[6] = s_set_coeffs;
   
   //assign outputs
-  assign uo_out = m_axis_fir_tdata[7:0]; //8Bits output
-  assign uio_out[2:0] = m_axis_fir_tdata[10:8]; //2Bits output
+  assign m_axis_fir_tdata[7:0] = uo_out; //8Bits output
+  assign m_axis_fir_tdata[10:8] = uio_out[2:0]; //2Bits output
   
   
   
       
   //remainder - set to defined state and config
-  assign uio_oe[7:0] = 8'b00111111;
-  assign uio_out[5:3] = 3'b000;
-  assign uio_out[7:6] = 2'b00;
+  //assign uio_oe[7:0] = 8'b00111111;
+  //assign uio_out[5:3] = 3'b000;
+  //assign uio_out[7:6] = 2'b00;
 
     
     

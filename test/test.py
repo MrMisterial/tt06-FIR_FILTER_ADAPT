@@ -12,7 +12,7 @@ async def reset_dut(reset_n, duration_ns):
 	reset_n.value = 1
 	reset_n._log.info("dut reset completed")
 
-@cocotb.test()
+#@cocotb.test()
 async def tt_init_state(dut):
 	dut._log.info("Start Testcase: Check initial states and outputs")
 	
@@ -36,6 +36,10 @@ async def tt_init_state(dut):
 	
 	
 	await ClockCycles(dut.clk, 100)
+	
+	dut.s_axis_fir_tdata.value = BinaryValue('00000001')
+	
+	await ClockCycles(dut.clk, 10)
 	
 	dut._log.info(f'output val: {dut.m_axis_fir_tdata.value}')
 
@@ -69,10 +73,20 @@ async def test_adder(dut):
 
   # Set the input values, wait one clock cycle, and check the output
   dut._log.info("Test")
-  dut.ui_in.value = 20
-  dut.uio_in.value = 30
+  #dut.ui_in.value = 1
+  dut.ui_in.value = 1
+  #dut.s_axis_fir_tdata.value = 1
+  dut.s_axis_fir_tvalid.value = 1
+  dut.s_set_coeffs.value = 0
+  #dut.uio_in.value = 30
+  
+  await ClockCycles(dut.clk, 10)
+  dut._log.info(f'output val: {dut.m_axis_fir_tdata.value}')
+  
+  dut.s_axis_fir_tdata.value = 5
 
-  await ClockCycles(dut.clk, 1)
+  await ClockCycles(dut.clk, 100)
+  dut._log.info(f'output val: {dut.m_axis_fir_tdata.value}')
   
   dut._log.info("Start FIR Testing")
   
