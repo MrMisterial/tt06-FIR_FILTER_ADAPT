@@ -23,7 +23,7 @@ module tt_um_haeuslermarkus_fir_filter (
   //assign uio_out = 0;
   //assign uio_oe  = 0;
   
-    wire reset = rst_n;
+    wire reset = !rst_n;
 
     assign uio_oe[7:0] = 8'b00111111;
     
