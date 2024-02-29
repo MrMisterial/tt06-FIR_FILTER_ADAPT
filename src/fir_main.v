@@ -87,11 +87,11 @@ module fir_main #(
     			cnt_buff <= new_cnt_buff;
     			act_y_n <= new_act_y_n;
     			
-    			for (e =0; e<(NBR_OF_TAPS); e = e + 1) begin //geht das so???
+    			for (e =0; e<(NBR_OF_TAPS); e = e + 1) begin
 				taps[e] <= new_taps[e];
 			end
 			
-			for (r =0; r<(BUFF_SIZE); r = r + 1) begin //geht das so???
+			for (r =0; r<(BUFF_SIZE); r = r + 1) begin
 				buffs[r] <= new_buffs[r];
 			end
 			
@@ -103,8 +103,6 @@ module fir_main #(
     integer j;
     integer w;
     always @* begin //, posedge clk, 
-    
-    //state,s_set_coeffs,s_axis_fir_tvalid, cnt_setup
     
     	next_state = state;
     	new_cnt_setup = cnt_setup;
@@ -124,6 +122,7 @@ module fir_main #(
 	
     
     	case (state)
+    	    //initial state -> sets FIR Filter taps to original values
     	    SETUP: begin
     	    	if(cnt_setup == 2'b11) begin
     	    		next_state = IDLE;
@@ -131,20 +130,14 @@ module fir_main #(
     	    	
     	    	new_cnt_setup = cnt_setup + 2'b01;
     	    	
-    	    	new_taps[0] = 3'b101;//{TAP_SIZE{1'b1}};
-		new_taps[1] = 3'b010;//{TAP_SIZE{1'b0}};
-		new_taps[2] = 3'b011;//{TAP_SIZE{1'b1}};
+    	    	new_taps[0] = 3'b101;
+		new_taps[1] = 3'b010;
+		new_taps[2] = 3'b011;
 		
-		/*
-    	    	
-		new_taps[0] = {TAP_SIZE{1'b1}};
-		new_taps[1] = {TAP_SIZE{1'b0}};
-		new_taps[2] = {TAP_SIZE{1'b1}};
-    	    	
-    	    	*/
     	    
     	    end
     	    
+    	    //waits for command to fetch filter input data or new fir filter configuration data
             IDLE: begin
 		if (s_axis_fir_tvalid == 1'b1) begin
 			next_state = GET_DATA;
@@ -154,20 +147,16 @@ module fir_main #(
 			next_state = CONFIG;
 		end
 		
-		for (w =0; w<(BUFF_SIZE-1); w = w + 1) begin //geht das so???
-			new_buffs[w] = {X_N_SIZE{1'b0}};
+		for (w =0; w<(BUFF_SIZE-1); w = w + 1) begin
+			new_buffs[w] = {X_N_SIZE{1'b0}}; //reset buffer 
 		end
 		
 		
 		
             end
-            GET_DATA: begin
-            /*  set this to idle
-            	if (s_set_coeffs == 1'b1) begin
-            		next_state = CONFIG;
-            	end
-            */
             
+            //fetch data from input and store it in filter buffer
+            GET_DATA: begin           
             	new_cnt_tap = 2'b00;
     		new_cnt_buff = 3'b000;
     		new_y_n = {Y_N_SIZE{1'b0}};
@@ -182,16 +171,19 @@ module fir_main #(
             	
             	
             	new_buffs[0] = x_n;
-	        for (j =0; j<(BUFF_SIZE-1); j = j + 1) begin //geht das so???
+	        for (j =0; j<(BUFF_SIZE-1); j = j + 1) begin
 			new_buffs[j+1] = buffs[j];
 		end
 		
  
             end 
             
+            //calculate the fir filter output
+            //this uses the trick of the symmetric property of the FIR Filter
+            //one filter tap is used twice. This reduces memory consumption
             CALC: begin
             
-            	if (cnt_tap == 2'b11) begin //make generic
+            	if (cnt_tap == 2'b11) begin
             		next_state = SET_OUTPUT;
             	end else begin
 		    	new_y_n = y_n + (taps[cnt_tap]*buffs[cnt_buff]+taps[cnt_tap]*buffs[(BUFF_SIZE-1)-new_cnt_buff]);
@@ -199,15 +191,11 @@ module fir_main #(
 		    	new_cnt_tap = cnt_tap + 2'b1;
 		    	new_cnt_buff = cnt_buff + 2'b1;
             	end
-            	
-            	/*
-            	if (s_axis_fir_tvalid == 1'b0) begin
-            		next_state = IDLE;
-            	end
-            	*/
 
             end
             
+            //set calculated fir filter output value to output pin
+            //the output remains the same till this state is reentered
             SET_OUTPUT: begin
             	
             	new_act_y_n = y_n;
@@ -220,7 +208,7 @@ module fir_main #(
             
             end
             
-            
+            //config new tap values for the FIR Filters
             CONFIG: begin
             	if (s_set_coeffs == 1'b0) begin
                 	next_state = IDLE;
@@ -231,14 +219,14 @@ module fir_main #(
                 new_taps[0] = x_n[TAP_SIZE-1:0];
 		
 		
-		for (i =1; i<(NBR_OF_TAPS); i = i + 1) begin //geht das so???
+		for (i =1; i<(NBR_OF_TAPS); i = i + 1) begin
 			new_taps[i] = taps[i-1];
 		end
             end
             
             default: begin
 		next_state = IDLE;
-		for (w =0; w<(BUFF_SIZE-1); w = w + 1) begin //geht das so???
+		for (w =0; w<(BUFF_SIZE-1); w = w + 1) begin
 			new_buffs[w] = {X_N_SIZE{1'b0}};
 		end
 		end
@@ -249,38 +237,7 @@ module fir_main #(
     
     
 
-
-
-	//sum to next_sum
-	/*
-    reg signed [Y_N_SIZE-1:0] sum;
-    integer k;
-    always @( posedge clk) begin    	    
-	    sum <= 0;	
-	    
-	    //sum = taps[0]*buffs[0] + taps[1]*buffs[1] + taps[2]*buffs[2]  +   taps[1]*buffs[3] + taps[0]*buffs[4];
-	    //buff <= taps[2]*buffs[2];
-	    
-	    for (k =0; k<(BUFF_SIZE); k = k + 1) begin //geht das so???
-	    	//sum = sum + (taps[k]*buffs[k]);
-	    	//sum = sum + 1;
-	    	
-	    	if (k < (NBR_OF_TAPS)) begin
-	    		sum <= sum + (taps[k]*buffs[k]);
-	    	end
-	    	else begin
-	    		sum <= sum + (taps[(BUFF_SIZE-1)-k]*buffs[k]);
-	    	end
-	    	
-	    	
-	    
-	    	
-
-	    end    
-	    
-    end
-    */
-    assign o_y_n = act_y_n;//(state == SET_OUTPUT) ? () : {Y_N_SIZE{1'b0}}; // (sum >>TAP_SIZE) ???
+    assign o_y_n = act_y_n; //wire to output
     
     
     
