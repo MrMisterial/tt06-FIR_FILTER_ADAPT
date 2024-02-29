@@ -29,14 +29,16 @@ async def tt_init_state(dut):
 	await reset_dut(dut.rst_n, 20)
 	
 	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
-	await RisingEdge(dut.clk)
+	
+	dut.s_set_coeffs.value = 0
+	dut.s_axis_fir_tvalid.value = 1
+	dut.s_axis_fir_tdata.value = BinaryValue('00000001')
+	
+	
+	await ClockCycles(dut.clk, 100)
+	
+	dut._log.info(f'output val: {dut.m_axis_fir_tdata.value}')
+
 	for i in range(8):
 		dut._log.info(f'#{i:>03} -> {dut.m_axis_fir_tdata.value.binstr}')
 	
