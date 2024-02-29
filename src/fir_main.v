@@ -22,11 +22,9 @@ module fir_main #(
     );
 
 
-    parameter BUFF_SIZE = 6;//NBR_OF_TAPS*2-1; //NBR_OF_TAPS;//
+    parameter BUFF_SIZE = NBR_OF_TAPS*2; //only store one half of the impulse response because FIR Filter have a symmetric one
     reg signed [TAP_SIZE-1:0] taps [0:NBR_OF_TAPS-1];
     reg signed [X_N_SIZE-1:0] buffs [0:BUFF_SIZE-1];
-    //reg signed [TAP_SIZE-1:0] tap;
-    //reg signed [X_N_SIZE-1:0] buff;
     
     reg signed [TAP_SIZE-1:0] new_taps [0:NBR_OF_TAPS-1];
     reg signed [X_N_SIZE-1:0] new_buffs [0:BUFF_SIZE-1];
@@ -49,15 +47,7 @@ module fir_main #(
     
 
     reg [2:0] next_state, state;
-    
-    /*
-    wire signed [X_N_SIZE-1:0] buff0 = buffs[0];
-    wire signed [X_N_SIZE-1:0] buff1 = buffs[1];
-    wire signed [X_N_SIZE-1:0] buff2 = buffs[2];
-    wire signed [X_N_SIZE-1:0] buff3 = buffs[3];
-    */
-    
-    
+ 
     localparam SETUP        = 3'b000;
     localparam IDLE         = 3'b001;
     localparam GET_DATA     = 3'b010;
@@ -72,28 +62,29 @@ module fir_main #(
     always @ (posedge clk) begin
 	
     		if(reset == 1'b1) begin
+    			//setting defined states and values when reset
     			state <= SETUP; 
-    			cnt_setup <= 2'b00;  //???
+    			cnt_setup <= 2'b00;
     			cnt_tap <= 2'b00;
     			cnt_buff <= 3'b000;
     			y_n <= {Y_N_SIZE{1'b0}};
     			act_y_n <= {Y_N_SIZE{1'b0}};
     			
-    			for (e =0; e<(NBR_OF_TAPS); e = e + 1) begin //geht das so???
+    			for (e =0; e<(NBR_OF_TAPS); e = e + 1) begin
 				taps[e] <= {TAP_SIZE{1'b1}};
 			end
 			
-			for (r =0; r<(BUFF_SIZE); r = r + 1) begin //geht das so???
+			for (r =0; r<(BUFF_SIZE); r = r + 1) begin
 				buffs[r] <= {X_N_SIZE{1'b0}};
 			end
     		end
     		else begin
+    			//update 
     			state <= next_state;
     			cnt_setup <= new_cnt_setup;
     			y_n <= new_y_n;
     			cnt_tap <= new_cnt_tap;
     			cnt_buff <= new_cnt_buff;
-    			//buff <= new_taps[0];
     			act_y_n <= new_act_y_n;
     			
     			for (e =0; e<(NBR_OF_TAPS); e = e + 1) begin //geht das so???
