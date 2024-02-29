@@ -25,4 +25,4 @@ To test the functionality of an FIR Filter, the easiest way is to perform an dir
 ## External hardware
 
 This can be done by any microcontroller or if one is interested in the functionlity of an FIR Filter by using buttons as input and leds as output. 
-But i recommend using at least an arduino cause timing and reproducibility is much more easily using automated testing.
+But i recommend using at least an arduino microcontroller cause timing and reproducibility is much more easily using automated testing.
