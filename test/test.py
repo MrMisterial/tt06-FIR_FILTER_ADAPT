@@ -23,7 +23,7 @@ async def tt_init_state(dut):
 	
 	
 	#start clock
-	cocotb.start_soon(Clock(dut.clk, 16, units="ns").start())
+	cocotb.start_soon(Clock(dut.clk, 1, units="ns").start())
 	
 	#reset dut
 	await reset_dut(dut.rst_n, 20)
