@@ -21,7 +21,7 @@ module tt_um_haeuslermarkus_fir_filter (
 
     wire reset = !rst_n;
 
-    assign uio_oe[7:0] = 8'b00111111;
+    assign uio_oe[7:0] = 8'b00111111; //configs bidirectional pins as in- or output
     
     wire [10:0] m_axis_fir_tdata; //FIR OUTPUT DATA
     assign uo_out = m_axis_fir_tdata[7:0]; //8Bits output
