@@ -48,6 +48,7 @@ module fir_main #(
 
     reg [2:0] next_state, state;
  
+    //states for statemachine
     localparam SETUP        = 3'b000;
     localparam IDLE         = 3'b001;
     localparam GET_DATA     = 3'b010;
@@ -102,7 +103,7 @@ module fir_main #(
     integer i;    	
     integer j;
     integer w;
-    always @* begin //, posedge clk, 
+    always @* begin
     
     	next_state = state;
     	new_cnt_setup = cnt_setup;
@@ -111,18 +112,18 @@ module fir_main #(
 	new_y_n = y_n;
 	new_act_y_n = act_y_n;
     	
-    	for (w =0; w<(BUFF_SIZE); w = w + 1) begin //geht das so???
+    	for (w =0; w<(BUFF_SIZE); w = w + 1) begin
 		new_buffs[w] = buffs[w];
 	end
 	
-	for (w =0; w<(NBR_OF_TAPS); w = w + 1) begin //geht das so???
+	for (w =0; w<(NBR_OF_TAPS); w = w + 1) begin
 		new_taps[w] = taps[w];
 	end
 	
 	
     
     	case (state)
-    	    //initial state -> sets FIR Filter taps to original values
+    	    //initial state -> sets FIR Filter taps to initial values
     	    SETUP: begin
     	    	if(cnt_setup == 2'b11) begin
     	    		next_state = IDLE;
@@ -220,7 +221,7 @@ module fir_main #(
 		
 		
 		for (i =1; i<(NBR_OF_TAPS); i = i + 1) begin
-			new_taps[i] = taps[i-1];
+			new_taps[i] = taps[i-1]; //shift the taps - see daisy chain
 		end
             end
             

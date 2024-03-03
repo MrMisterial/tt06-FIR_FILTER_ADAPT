@@ -37,17 +37,7 @@ module tb ();
   //assign outputs
   assign m_axis_fir_tdata[7:0] = uo_out; //8Bits output
   assign m_axis_fir_tdata[10:8] = uio_out[2:0]; //2Bits output
-  
-  
-  
       
-  //remainder - set to defined state and config
-  //assign uio_oe[7:0] = 8'b00111111;
-  //assign uio_out[5:3] = 3'b000;
-  //assign uio_out[7:6] = 2'b00;
-
-    
-    
 
   // Replace tt_um_example with your module name:
   tt_um_haeuslermarkus_fir_filter tt_um_haeuslermarkus_fir_filter_inst (
