@@ -25,12 +25,9 @@ module tt_um_haeuslermarkus_fir_filter (
     
     wire [10:0] m_axis_fir_tdata; //FIR OUTPUT DATA
     assign uo_out = m_axis_fir_tdata[7:0]; //8Bits output
-    //assign uio_out[3:0] = m_axis_fir_tdata[10:8]; //2Bits output
-    //assign uio_out[5:4] = 3'b00; //set unused outputs to zero
-    assign uio_out[7:6] = 2'b00;
-    
-    assign uio_out[2:0] = m_axis_fir_tdata[10:8]; //2Bits output
+    assign uio_out[2:0] = m_axis_fir_tdata[10:8]; //3Bits output
     assign uio_out[5:3] = 3'b000; //set unused outputs to zero
+    assign uio_out[7:6] = 2'b00; //set bidirectional pin output - necessary for linter
     
     //set params
     wire s_set_coeffs;
@@ -40,7 +37,7 @@ module tt_um_haeuslermarkus_fir_filter (
     assign s_axis_fir_tvalid = uio_in[7]; // Input to activate FIR Filter output
    
     wire [7:0] s_axis_fir_tdata; //FIR INPUT DATA 
-    assign s_axis_fir_tdata = ui_in[7:0]; //8 Bit in
+    assign s_axis_fir_tdata = ui_in[7:0]; //8 Bit input
 
     
     
